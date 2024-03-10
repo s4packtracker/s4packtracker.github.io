@@ -1,0 +1,19 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  text-align: center;
+}
+
+#packs-container {
+  margin-top: 20px;
+}
+
+.pack {
+  margin-bottom: 10px;
+}
+
+.delete-btn {
+  margin-left: 10px;
+}
