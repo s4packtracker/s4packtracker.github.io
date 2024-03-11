@@ -43,11 +43,11 @@ function calculateTotalCost() {
 }
 
 function calculateMaxBudget() {
-  let totalMaxBudget = 0;
-  for (const type in packTypes) {
-    totalMaxBudget += packTypes[type] * packsList[type].length;
-  }
-  return totalMaxBudget;
+  let maxBudget = 0;
+  Object.values(packTypes).forEach(price => {
+    maxBudget += price;
+  });
+  return maxBudget;
 }
 
 function renderPacks() {
@@ -67,29 +67,25 @@ function renderPacks() {
           </optgroup>
         `).join('')}
       </select>
-      <input type="number" value="${pack.price}" onchange="updatePack(${index}, this.value)">
+      <input type="number" value="${pack.price}" min="0.01" step="0.01" onchange="updatePack(${index}, this.value)">
       <button class="delete-btn" onclick="deletePack(${index})">Delete</button>
     `;
     packsContainer.appendChild(packDiv);
   });
 
   const totalCostElement = document.getElementById('total-cost');
-  const remainingCostElement = document.getElementById('remaining-cost');
-
   const totalCost = calculateTotalCost();
-  const remainingBudget = calculateMaxBudget() - totalCost;
-
-  totalCostElement.textContent = `Gesamtausgaben: ${totalCost.toFixed(2)}€`;
-  remainingCostElement.textContent = `Maximaler ausstehender Betrag: ${remainingBudget.toFixed(2)}€`;
+  const maxBudget = calculateMaxBudget();
+  totalCostElement.textContent = `Gesamtausgaben: ${totalCost.toFixed(2)}€ | Maximaler ausstehender Betrag: ${maxBudget.toFixed(2)}€`;
 }
 
 function addPack() {
-  packs.push({ name: Object.keys(packsList)[0], price: 0 });
+  packs.push({ name: Object.keys(packsList)[0], price: packTypes[Object.keys(packsList)[0]] });
   renderPacks();
 }
 
 function updatePack(index, price, name) {
-  if (price !== null) packs[index].price = price;
+  if (price !== null) packs[index].price = parseFloat(price);
   if (name !== null) packs[index].name = name;
   renderPacks();
 }
