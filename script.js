@@ -34,12 +34,20 @@ const packsList = {
   ]
 };
 
-function calculateMaxBudget() {
+function calculateTotalCost() {
   let totalCost = 0;
   packs.forEach(pack => {
     totalCost += pack.price;
   });
   return totalCost;
+}
+
+function calculateMaxBudget() {
+  let totalMaxBudget = 0;
+  for (const type in packTypes) {
+    totalMaxBudget += packTypes[type] * packsList[type].length;
+  }
+  return totalMaxBudget;
 }
 
 function renderPacks() {
@@ -53,8 +61,11 @@ function renderPacks() {
       <select onchange="updatePack(${index}, null, this.value)">
         ${Object.keys(packsList).map(type => `
           <optgroup label="${type}">
-            ${packsList[type].map(packName => `<option value="${packName}" ${packName === pack.name ? 'selected' : ''}>${packName}</option>`).join('')}
-          </optgroup>`).join('')}
+            ${packsList[type].map(packName => `
+              <option value="${packName}" ${packName === pack.name ? 'selected' : ''}>${packName}</option>
+            `).join('')}
+          </optgroup>
+        `).join('')}
       </select>
       <input type="number" value="${pack.price}" onchange="updatePack(${index}, this.value)">
       <button class="delete-btn" onclick="deletePack(${index})">Delete</button>
@@ -63,8 +74,13 @@ function renderPacks() {
   });
 
   const totalCostElement = document.getElementById('total-cost');
-  const maxBudget = calculateMaxBudget();
-  totalCostElement.textContent = `Maximaler ausstehender Betrag: ${maxBudget.toFixed(2)}€`;
+  const remainingCostElement = document.getElementById('remaining-cost');
+
+  const totalCost = calculateTotalCost();
+  const remainingBudget = calculateMaxBudget() - totalCost;
+
+  totalCostElement.textContent = `Gesamtausgaben: ${totalCost.toFixed(2)}€`;
+  remainingCostElement.textContent = `Maximaler ausstehender Betrag: ${remainingBudget.toFixed(2)}€`;
 }
 
 function addPack() {
@@ -73,7 +89,7 @@ function addPack() {
 }
 
 function updatePack(index, price, name) {
-  if (price !== null) packs[index].price = parseFloat(price);
+  if (price !== null) packs[index].price = price;
   if (name !== null) packs[index].name = name;
   renderPacks();
 }
