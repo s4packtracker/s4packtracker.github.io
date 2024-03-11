@@ -1,19 +1,47 @@
 body {
   font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 h1 {
   text-align: center;
-}
-
-#packs-container {
   margin-top: 20px;
 }
 
-.pack {
-  margin-bottom: 10px;
+.packs-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-.delete-btn {
-  margin-left: 10px;
+.pack {
+  margin: 10px;
+  width: 200px;
+}
+
+.pack img {
+  width: 100%;
+  height: auto;
+}
+
+.pack-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.sticky-menu {
+  position: sticky;
+  top: 0;
+  background-color: #f0f0f0;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.sticky-menu .total-cost,
+.sticky-menu .max-budget {
+  font-size: 18px;
 }
