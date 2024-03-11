@@ -58,35 +58,42 @@ function renderPacks() {
     const packDiv = document.createElement('div');
     packDiv.classList.add('pack');
     packDiv.innerHTML = `
-      <select onchange="updatePack(${index}, null, this.value)">
-        ${Object.keys(packsList).map(type => `
-          <optgroup label="${type}">
-            ${packsList[type].map(packName => `
-              <option value="${packName}" ${packName === pack.name ? 'selected' : ''}>${packName}</option>
-            `).join('')}
-          </optgroup>
-        `).join('')}
-      </select>
-      <input type="number" value="${pack.price}" min="0.01" step="0.01" onchange="updatePack(${index}, this.value)">
-      <button class="delete-btn" onclick="deletePack(${index})">Delete</button>
+      <img src="placeholder.jpg" alt="${pack.name}">
+      <div class="pack-details">
+        <label>
+          <input type="checkbox" onchange="togglePack(${index}, this.checked)" ${pack.owned ? 'checked' : ''}>
+          ${pack.name}
+        </label>
+        <div>
+          <input type="number" value="${pack.price}" min="0.01" step="0.01" onchange="updatePack(${index}, this.value)">
+          <button class="delete-btn" onclick="deletePack(${index})">Delete</button>
+        </div>
+      </div>
     `;
     packsContainer.appendChild(packDiv);
   });
 
-  const totalCostElement = document.getElementById('total-cost');
+  const totalCostElement = document.querySelector('.total-cost');
   const totalCost = calculateTotalCost();
-  const maxBudget = calculateMaxBudget();
-  totalCostElement.textContent = `Gesamtausgaben: ${totalCost.toFixed(2)}€ | Maximaler ausstehender Betrag: ${maxBudget.toFixed(2)}€`;
+  totalCostElement.textContent = `Gesamtausgaben: ${totalCost.toFixed(2)}€`;
+
+  const maxBudgetElement = document.querySelector('.max-budget');
+  const maxBudget = calculateMaxBudget() - totalCost;
+  maxBudgetElement.textContent = `Maximaler ausstehender Betrag: ${maxBudget.toFixed(2)}€`;
 }
 
 function addPack() {
-  packs.push({ name: Object.keys(packsList)[0], price: packTypes[Object.keys(packsList)[0]] });
+  packs.push({ name: Object.keys(packsList)[0], price: packTypes[Object.keys(packsList)[0]], owned: false });
   renderPacks();
 }
 
-function updatePack(index, price, name) {
-  if (price !== null) packs[index].price = parseFloat(price);
-  if (name !== null) packs[index].name = name;
+function updatePack(index, price) {
+  packs[index].price = parseFloat(price);
+  renderPacks();
+}
+
+function togglePack(index, checked) {
+  packs[index].owned = checked;
   renderPacks();
 }
 
