@@ -7,11 +7,14 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="sticky-menu">
+    <div id="total-cost" class="total-cost"></div>
+    <div id="max-budget" class="max-budget"></div>
+  </div>
   <h1>Sims 4 Pack Tracker</h1>
-  <div id="packs-container">
+  <div id="packs-container" class="packs-container">
     <!-- Packs will be dynamically added here -->
   </div>
-  <div id="total-cost"></div>
   <button onclick="addPack()">Add Pack</button>
   <button onclick="exportData()">Export Data</button>
   <button onclick="importData()">Import Data</button>
