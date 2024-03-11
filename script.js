@@ -47,7 +47,7 @@ function calculateMaxBudget() {
   Object.values(packTypes).forEach(price => {
     maxBudget += price;
   });
-  return maxBudget;
+  return maxBudget - calculateTotalCost();
 }
 
 function renderPacks() {
@@ -60,10 +60,7 @@ function renderPacks() {
     packDiv.innerHTML = `
       <img src="placeholder.jpg" alt="${pack.name}">
       <div class="pack-details">
-        <label>
-          <input type="checkbox" onchange="togglePack(${index}, this.checked)" ${pack.owned ? 'checked' : ''}>
-          ${pack.name}
-        </label>
+        <div>${pack.name}</div>
         <div>
           <input type="number" value="${pack.price}" min="0.01" step="0.01" onchange="updatePack(${index}, this.value)">
           <button class="delete-btn" onclick="deletePack(${index})">Delete</button>
@@ -78,22 +75,27 @@ function renderPacks() {
   totalCostElement.textContent = `Gesamtausgaben: ${totalCost.toFixed(2)}€`;
 
   const maxBudgetElement = document.querySelector('.max-budget');
-  const maxBudget = calculateMaxBudget() - totalCost;
+  const maxBudget = calculateMaxBudget();
   maxBudgetElement.textContent = `Maximaler ausstehender Betrag: ${maxBudget.toFixed(2)}€`;
 }
 
 function addPack() {
-  packs.push({ name: Object.keys(packsList)[0], price: packTypes[Object.keys(packsList)[0]], owned: false });
+  const selectedType = prompt('Please select the pack type (Erweiterungspacks, Gameplaypacks, Accessoires-Packs, Sets):');
+  if (!selectedType || !packsList[selectedType]) {
+    alert('Invalid pack type!');
+    return;
+  }
+  const selectedPack = prompt(`Please select a pack from ${selectedType}: \n${packsList[selectedType].join(', ')}`);
+  if (!selectedPack || !packsList[selectedType].includes(selectedPack)) {
+    alert('Invalid pack selection!');
+    return;
+  }
+  packs.push({ name: selectedPack, price: packTypes[selectedType] });
   renderPacks();
 }
 
 function updatePack(index, price) {
   packs[index].price = parseFloat(price);
-  renderPacks();
-}
-
-function togglePack(index, checked) {
-  packs[index].owned = checked;
   renderPacks();
 }
 
